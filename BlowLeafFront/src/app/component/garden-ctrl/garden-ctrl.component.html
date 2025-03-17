@@ -1,0 +1,11 @@
+
+<app-garden-form (onGardenUpdate)="setActiveGarden($event)"/>
+
+@if(activeGarden.width && activeGarden.height) {
+  <app-blow-ctrl [garden]="activeGarden" (onGardenUpdate)="setActiveGarden($event)"/>
+  <app-garden-view [garden]="activeGarden" />
+
+  <section>
+    Total : {{activeGarden.getSum()}}
+  </section>
+}

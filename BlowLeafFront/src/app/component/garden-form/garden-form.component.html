@@ -1,0 +1,16 @@
+<form (ngSubmit)="onSubmit()" [formGroup]="gardenForm">
+
+  <label>width</label>
+  <input type="text"
+         formControlName="width"
+         placeholder="number between 1 and 10"/>
+
+
+  <label>height</label>
+  <input type="text"
+         formControlName="height"
+         placeholder="number between 1 and 10"/>
+
+  <button type="submit" [disabled]="!gardenForm.valid"
+          class="btn btn-info">Submit</button>
+</form>

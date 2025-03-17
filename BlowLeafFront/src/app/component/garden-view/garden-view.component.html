@@ -1,0 +1,5 @@
+<mat-grid-list cols="{{garden().width}}" rowHeight="5em">
+  @for(tile of garden().getTiles(); track tile.id) {
+    <mat-grid-tile>{{tile.value}}</mat-grid-tile>
+  }
+</mat-grid-list>
