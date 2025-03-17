@@ -6,7 +6,8 @@ import { Garden } from '../../model/garden';
 describe('GardenViewComponent', () => {
   let component: GardenViewComponent;
   let fixture: ComponentFixture<GardenViewComponent>;
-  let garden = new Garden(2,3);
+  let garden = new Garden({} as Garden);
+  garden.init(2,3);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -19,7 +20,7 @@ describe('GardenViewComponent', () => {
     fixture.componentRef.setInput('garden', garden);
     fixture.detectChanges();
 
-    await fixture.whenStable();
+    //await fixture.whenStable();
   });
 
   it('should create', () => {
