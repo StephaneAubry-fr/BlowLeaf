@@ -1,0 +1,11 @@
+version: 1
+type: maven
+resolver:
+    serverId: devops
+    snapshotRepo: maven-remote
+    releaseRepo: maven-remote
+deployer:
+    serverId: devops
+    snapshotRepo: libs-snapshot
+    releaseRepo: libs-release
+useWrapper: true

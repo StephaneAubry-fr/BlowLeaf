@@ -5,6 +5,7 @@ pipeline {
         // Install the Maven version configured as "M3" and add it to the path.
         maven "Maven3"
         nodejs "NodeJS23"
+        jfrog 'jfrog-cli'
     }
 
     stages {
@@ -32,10 +33,13 @@ pipeline {
                             }
                             */
 
-                            script {
+                           /* script {
                                 def MVN_STDOUT = sh( script: 'mvn -Dmaven.test.failure.ignore=true clean package', returnStdout: true)
                                 echo MVN_STDOUT
-                            }
+                            }*/
+
+                            jf 'mvn clean package'
+
                        }
                     }
                 }
