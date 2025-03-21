@@ -38,7 +38,7 @@ pipeline {
                                 echo MVN_STDOUT
                             }*/
 
-                            jf 'mvn clean package'
+                            jf 'mvn clean install'
 
                        }
                     }
