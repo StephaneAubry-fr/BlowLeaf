@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     tools {
-        // Install the Maven version configured as "M3" and add it to the path.
         maven "Maven3"
         nodejs "NodeJS23"
         jfrog 'jfrog-cli'
@@ -11,7 +10,6 @@ pipeline {
     stages {
         stage('Preparation') {
             steps {
-                //echo 'download git project'
                 git branch: 'main',
                     credentialsId: params.GitHubCred,
                     url: 'git@github.com:StephaneAubry-fr/BlowLeaf.git'
@@ -24,22 +22,7 @@ pipeline {
                 stage('Build maven') {
                     steps {
                         dir('BlowLeafSVC') {
-                            echo 'Build maven'
-
-                            /*
-                            script{
-                                def LS_RETURN = sh(script: 'ls -ail', returnStdout: true)
-                                echo LS_RETURN
-                            }
-                            */
-
-                           /* script {
-                                def MVN_STDOUT = sh( script: 'mvn -Dmaven.test.failure.ignore=true clean package', returnStdout: true)
-                                echo MVN_STDOUT
-                            }*/
-
-                            jf 'mvn clean install'
-
+                            jf 'mvn clean compile'
                        }
                     }
                 }
@@ -47,18 +30,59 @@ pipeline {
                 stage('Build npm') {
                     steps {
                         dir('BlowLeafFront') {
-                            echo 'Build npm'
-                            nodejs('NodeJS23') {
-                                script {
-                                    def NPM_STDOUT = sh(script:'npm install', returnStdout: true)
-                                    echo NPM_STDOUT
-                                }
+                            nodejs(nodeJSInstallationName:'NodeJS23', configId:'0b0fb0b4-046f-41df-ae52-2ab44067a07d') {
+                                sh 'npm config fix'
+                                sh 'npm install'
                             }
                         }
                     }
                 }
+            }
+        }
 
+        stage('Test') {
+            parallel {
+                stage('Test maven') {
+                    steps {
+                        dir('BlowLeafSVC') {
+                            jf 'mvn test'
+                       }
+                    }
+                }
 
+                stage('Test npm') {
+                    steps {
+                        dir('BlowLeafFront') {
+                            nodejs(nodeJSInstallationName:'NodeJS23', configId:'0b0fb0b4-046f-41df-ae52-2ab44067a07d') {
+                                sh 'npm config fix'
+                                sh 'npm test'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Publish') {
+            parallel {
+                stage('Publish maven') {
+                    steps {
+                        dir('BlowLeafSVC') {
+                            jf 'mvn install'
+                       }
+                    }
+                }
+
+                stage('Publish npm') {
+                    steps {
+                        dir('BlowLeafFront') {
+                            nodejs(nodeJSInstallationName:'NodeJS23', configId:'0b0fb0b4-046f-41df-ae52-2ab44067a07d') {
+                                sh 'npm config fix'
+                                sh 'npm publish'
+                            }
+                        }
+                    }
+                }
             }
         }
     }
