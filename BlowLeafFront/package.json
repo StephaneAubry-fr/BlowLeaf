@@ -1,5 +1,5 @@
 {
-  "name": "blow-leaf-front",
+  "name": "@fixvid/blow-leaf-front",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
