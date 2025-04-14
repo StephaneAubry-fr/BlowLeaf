@@ -66,7 +66,7 @@ pipeline {
                 stage('Publish maven') {
                     steps {
                         dir('BlowLeafSVC') {
-                            jf 'mvn install'
+                            jf 'mvn package spring-boot:repackage install'
                        }
                     }
                 }
