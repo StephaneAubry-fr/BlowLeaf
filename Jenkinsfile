@@ -30,8 +30,7 @@ pipeline {
                 stage('Build npm') {
                     steps {
                         dir('BlowLeafFront') {
-                            nodejs(nodeJSInstallationName:'NodeJS23', configId:'0b0fb0b4-046f-41df-ae52-2ab44067a07d') {
-                                sh 'npm config fix'
+                            withNPM(npmrcConfig: 'fixvid-npmrc') {
                                 sh 'npm install'
                             }
                         }
@@ -53,8 +52,7 @@ pipeline {
                 stage('Test npm') {
                     steps {
                         dir('BlowLeafFront') {
-                            nodejs(nodeJSInstallationName:'NodeJS23', configId:'0b0fb0b4-046f-41df-ae52-2ab44067a07d') {
-                                sh 'npm config fix'
+                            withNPM(npmrcConfig: 'fixvid-npmrc') {
                                 sh 'npm test'
                             }
                         }
@@ -76,9 +74,19 @@ pipeline {
                 stage('Publish npm') {
                     steps {
                         dir('BlowLeafFront') {
-                            nodejs(nodeJSInstallationName:'NodeJS23', configId:'0b0fb0b4-046f-41df-ae52-2ab44067a07d') {
-                                sh 'npm config fix'
-                                sh 'npm publish'
+                            withNPM(npmrcConfig: 'fixvid-npmrc') {
+                                script {
+                                    def PACKAGE_VERSION = sh(returnStdout: true, script: 'node -p -e \"require(\'./package.json\').version\"')
+                                    def PACKAGE_NAME    = sh(returnStdout: true, script: 'node -p -e \"require(\'./package.json\').name\"').replaceAll("[\\n]", "")
+                                    def PUBLISHED_VERSIONS = sh(returnStdout: true, script: 'npm view ' + PACKAGE_NAME + ' versions')
+
+                                    if(PUBLISHED_VERSIONS.contains(PACKAGE_VERSION)) {
+                                        echo "Version " + PACKAGE_VERSION + " already published"
+                                    } else {
+                                        echo "Publishing Version " + PACKAGE_VERSION
+                                        sh 'npm publish --access public'
+                                    }
+                                }
                             }
                         }
                     }
