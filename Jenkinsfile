@@ -76,8 +76,8 @@ pipeline {
                         dir('BlowLeafFront') {
                             withNPM(npmrcConfig: 'fixvid-npmrc') {
                                 script {
-                                    def PACKAGE_VERSION = sh(returnStdout: true, script: 'node -p -e \"require(\'./package.json\').version\"')
-                                    def PACKAGE_NAME    = sh(returnStdout: true, script: 'node -p -e \"require(\'./package.json\').name\"').replaceAll("[\\n]", "")
+                                    def PACKAGE_VERSION = sh(returnStdout: true, script: 'node -p -e \"require(\'./package.json\').version\"').replaceAll("[\\n ]", "")
+                                    def PACKAGE_NAME    = sh(returnStdout: true, script: 'node -p -e \"require(\'./package.json\').name\"').replaceAll("[\\n ]", "")
                                     def PUBLISHED_VERSIONS = sh(returnStdout: true, script: 'npm view ' + PACKAGE_NAME + ' versions')
 
                                     if(PUBLISHED_VERSIONS.contains(PACKAGE_VERSION)) {
@@ -91,6 +91,7 @@ pipeline {
                         }
                     }
                 }
+
             }
         }
     }
