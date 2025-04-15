@@ -16,7 +16,7 @@ export class BlowService {
   private usersUrl: string;
 
   constructor(private http: HttpClient) {
-      this.usersUrl = 'http://localhost:8080/blow';
+      this.usersUrl = 'http://10.0.2.20:8080/blow';
     }
 
   public ping() : Observable<string> {
