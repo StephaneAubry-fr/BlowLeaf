@@ -1,0 +1,4 @@
+- name : deploy blowleaf
+  hosts: blowleaf
+  roles:
+    - role: "deploy-blowleaf"

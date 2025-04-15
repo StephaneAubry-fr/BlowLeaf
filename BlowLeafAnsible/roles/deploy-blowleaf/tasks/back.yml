@@ -1,0 +1,70 @@
+- name: compute backurl snapshot
+  when: '"SNAPSHOT" in version.back'
+  set_fact:
+    back_url: "{{back.snapshot}}"
+
+- name: compute backurl release
+  when: 'not "SNAPSHOT" in version.back'
+  set_fact:
+    back_url: "{{back.release}}"
+
+###
+- name: Install jdk
+  package:
+    name: "{{back.java}}"
+    state: present
+  become: true
+
+###
+- name: Stop back service
+  systemd:
+    name: "{{back.service.name}}"
+    state: stopped
+  become: true
+  ignore_errors: true
+
+- name: Delete back deploy directory
+  file:
+    path: "{{back.service.path}}"
+    state: absent
+  become: true
+
+- name: Create back deploy directory
+  file:
+    path: "{{back.service.path}}"
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ group }}"
+    mode: 0700
+  become: true
+
+###
+- name: Download jar file
+  community.general.maven_artifact:
+    group_id: com.fixvid
+    artifact_id: BlowLeafSVC
+    version: "{{version.back}}"
+    repository_url: "{{back_url}}"
+    dest: "{{back.service.path}}/{{back.service.bin}}"
+  become: true
+
+- name: Set owner on jar
+  file:
+    path: "{{back.service.path}}/{{back.service.bin}}"
+    owner: "{{ user }}"
+    group: "{{ group }}"
+    mode: 0700
+  notify:
+    - Start back service
+  become: true
+
+###
+- name: Copy back.service to server
+  ansible.builtin.template:
+    src: templates/back.service.j2
+    dest: "/etc/systemd/system/{{back.service.name}}.service"
+    owner: root
+    group: root
+  notify:
+    - Start back service
+  become: true

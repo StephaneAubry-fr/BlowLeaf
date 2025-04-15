@@ -1,0 +1,10 @@
+[Unit]
+Description=BlowLeaf back service
+
+[Service]
+User={{user}}
+Group={{group}}
+ExecStart=java -jar {{back.service.path}}/{{back.service.bin}}
+
+[Install]
+WantedBy=multi-user.target

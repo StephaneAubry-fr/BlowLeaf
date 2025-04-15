@@ -1,0 +1,16 @@
+user: "demo-blowleaf"
+group: "demo-blowleaf"
+back:
+  snapshot: "http://10.0.2.10:8092/artifactory/libs-snapshot"
+  release:  "http://10.0.2.10:8092/artifactory/libs-release"
+  java: "openjdk-21-jre-headless"
+  service:
+    name: "blowleaf-back"
+    path: "/usr/local/bin/blsvc"
+    bin: "BlowLeafSVC-{{version.back}}.jar"
+front:
+  package: "@fixvid/blow-leaf-front"
+  build: "/home/provisioner/build/blfront"
+  service:
+    name: "blowleaf-front"
+    path: "/usr/local/bin/blfront"

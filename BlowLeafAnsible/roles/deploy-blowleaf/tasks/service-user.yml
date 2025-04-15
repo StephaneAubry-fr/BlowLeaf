@@ -1,0 +1,15 @@
+- name: create service group
+  group:
+    name: "{{group}}"
+    state: present
+  become: true
+
+- name: create service user
+  user:
+    name: "{{user}}"
+    groups: "{{group}}"
+    shell: /sbin/nologin
+    append: yes
+    state: present
+    create_home: no
+  become: true

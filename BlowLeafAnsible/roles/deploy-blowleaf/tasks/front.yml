@@ -1,0 +1,110 @@
+###
+- name: Install nodejs
+  package:
+    name: nodejs
+    state: present
+  become: true
+
+- name: Install npm
+  package:
+    name: npm
+    state: present
+  become: true
+
+- name: Install Angular
+  package:
+    name: ng-common
+    state: present
+  become: true
+
+###
+- name: Install Angular cli.
+  npm:
+    name: "@angular/cli"
+    global: true
+  become: true
+
+- name: Install Angular http server.
+  npm:
+    name: "angular-http-server"
+    global: true
+  become: true
+
+###
+- name: Ensure build path is absent
+  file:
+    path: "{{front.build}}"
+    state: absent
+
+- name: Ensure build path exist
+  file:
+    path: "{{front.build}}"
+    state: directory
+    mode: 0700
+
+- name: Retrieve front source
+  command:
+    chdir: "{{front.build}}"
+    cmd: "npm pack {{front.package}}@{{version.front}}"
+
+- name: Unpack tgz
+  command:
+    chdir: "{{front.build}}"
+    cmd: "tar -x --strip-components=1 -f fixvid-blow-leaf-front-{{version.front}}.tgz"
+
+- name: Npm install front
+  command:
+    chdir: "{{front.build}}"
+    cmd: "npm install"
+
+- name: Npm build front
+  command:
+    chdir: "{{front.build}}"
+    cmd: "npm run build"
+
+###
+- name: Stop front service
+  systemd:
+    name: "{{front.service.name}}"
+    state: stopped
+  become: true
+  ignore_errors: true
+
+- name: Delete front deploy directory
+  file:
+    path: "{{front.service.path}}"
+    state: absent
+  become: true
+
+- name: Create front deploy directory
+  file:
+    path: "{{front.service.path}}"
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ group }}"
+    mode: 0700
+  become: true
+
+###
+- name: Copy build files to service path
+  ansible.builtin.copy:
+    src: "{{front.build}}/dist/blow-leaf-front/browser/"
+    dest: "{{front.service.path}}"
+    owner: "{{user}}"
+    group: "{{group}}"
+    mode: 0700
+    remote_src: true
+  notify:
+    - Start front service
+  become: true
+
+###
+- name: Copy front.service to server
+  ansible.builtin.template:
+    src: templates/front.service.j2
+    dest: "/etc/systemd/system/{{front.service.name}}.service"
+    owner: root
+    group: root
+  notify:
+    - Start front service
+  become: true

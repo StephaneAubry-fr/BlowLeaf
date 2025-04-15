@@ -1,0 +1,10 @@
+[Unit]
+Description=BlowLeaf front service
+
+[Service]
+User={{user}}
+Group={{group}}
+ExecStart=angular-http-server -p 4200 --path {{front.service.path}}
+
+[Install]
+WantedBy=multi-user.target

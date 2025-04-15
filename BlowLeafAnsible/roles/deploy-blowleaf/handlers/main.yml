@@ -1,0 +1,13 @@
+- name: Start back service
+  systemd:
+    name: "{{back.service.name}}"
+    state: started
+    enabled: yes
+  become: true
+
+- name: Start front service
+  systemd:
+    name: "{{front.service.name}}"
+    state: started
+    enabled: yes
+  become: true
