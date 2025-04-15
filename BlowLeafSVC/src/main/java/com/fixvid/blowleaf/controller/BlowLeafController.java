@@ -4,7 +4,7 @@ import com.fixvid.blowleaf.entity.Garden;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://10.0.2.20:4200")
 public class BlowLeafController {
 
 
