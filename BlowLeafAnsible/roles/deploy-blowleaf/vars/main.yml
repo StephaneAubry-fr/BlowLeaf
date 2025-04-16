@@ -10,7 +10,7 @@ back:
     bin: "BlowLeafSVC-{{version.back}}.jar"
 front:
   package: "@fixvid/blow-leaf-front"
-  build: "/home/provisioner/build/blfront"
+  build: "/tmp/build/blfront"
   service:
     name: "blowleaf-front"
     path: "/usr/local/bin/blfront"
