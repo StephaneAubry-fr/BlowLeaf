@@ -1,5 +1,7 @@
 #!/bin/bash
 
+ssh-add ~/.ssh/github
+
 rm -rf ~/jenkins-deploy
 mkdir ~/jenkins-deploy
 
