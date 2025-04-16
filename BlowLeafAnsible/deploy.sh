@@ -1,5 +1,6 @@
 #!/bin/bash
 
+eval `ssh-agent -s`
 ssh-add ~/.ssh/github
 
 rm -rf ~/jenkins-deploy
