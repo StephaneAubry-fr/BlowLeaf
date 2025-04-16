@@ -94,5 +94,26 @@ pipeline {
 
             }
         }
+
+        stage('Deploy') {
+            steps {
+                dir('BlowLeafAnsible') {
+                    withCredentials([sshUserPrivateKey(credentialsId: 'deployer', usernameVariable: 'userName', keyFileVariable: 'identity', passphraseVariable: '')]) {
+                         script {
+                            def remote = [:]
+                            remote.name = "toolbox"
+                            remote.host = "10.0.2.11"
+                            remote.allowAnyHosts = true
+                            remote.user = userName
+                            remote.identityFile = identity
+
+                            sshCommand remote: remote, command: 'uname -n'
+                            sshScript remote: remote, script: "deploy.sh"
+                         }
+                    }
+
+               }
+            }
+        }
     }
 }
