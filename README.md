@@ -1,31 +1,31 @@
 # BlowLeaf
+- Une application ludique pour voir les bases de dev front angular et les webservices sous spring-boot
+- Back spring boot
+    
+  
+    cd BlowLeafSCV
+    mvn clean package spring-boot:repackage install 
+    mvn test
+    java -jar ./target/BlowLeafSVC-*.jar
 
-- Demo springboot angular
+- Front Angular
 
-        $FIREFOX_BIN
-        
-        run test
-        sudo apt install libcanberra-gtk-module libcanberra-gtk3-module
-        
-        sudo npm install -g @angular/cli
-        sudo npm install -g karma
-        
-        ng test --include='**/model/*.spec.ts'
+    
+    cd BlowLeafFront
+    npm install
+    npm test
+    npm start
+
+- Build Angular
+
+    
+    cd BlowLeafFront
+    npm install 
+    ng build --aot
+    angular-http-server -p 4200 --path ./dist/blow-leaf-front/browser
 
 
-- spec.ts : NullInjectorError: No provider for HttpClient!
+- Deployer ansible
 
-        import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-        [...]
+        ansible-playbook -i inventory.ini playbook-blowleaf.yml
 
-        await TestBed.configureTestingModule({
-        imports: [BlowCtrlComponent, HttpClientTestingModule]
-        })
-        .compileComponents();
-
-- curl
-
-        curl --header "Content-Type: application/json" \
-        --request POST \
-        --data '{"width":"2","height":"3","squares":[[1,0],[5,3],[4,5]]}' \
-        http://localhost:8080/blow/right
